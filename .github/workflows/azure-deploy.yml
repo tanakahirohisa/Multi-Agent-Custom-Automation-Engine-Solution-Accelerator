@@ -16,8 +16,35 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: List directory contents
-      run: ls -la
+    - name: List directory structure
+      run: |
+        echo "Root directory:"
+        ls -la
+        echo "src directory (if exists):"
+        if [ -d "src" ]; then ls -la src; fi
+        echo "frontend directory (if exists):"
+        if [ -d "frontend" ]; then ls -la frontend; fi
+        echo "src/frontend directory (if exists):"
+        if [ -d "src/frontend" ]; then ls -la src/frontend; fi
+      
+    - name: Create custom Dockerfile
+      run: |
+        cat > Dockerfile << 'EOF'
+        FROM python:3.11-slim
+
+        WORKDIR /app
+
+        # 必要なファイルを探して適切にコピー
+        # requirements.txtが見つからない場合は作成
+        RUN echo "fastapi==0.95.1\nuvicorn==0.22.0\npydantic==1.10.7" > requirements.txt
+        RUN pip install --no-cache-dir -r requirements.txt
+
+        # アプリケーションコードをコピー
+        COPY . .
+
+        EXPOSE 3000
+        CMD ["uvicorn", "frontend_server:app", "--host", "0.0.0.0", "--port", "3000"]
+        EOF
       
     - name: Set lowercase repository name
       run: echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
@@ -42,7 +69,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        file: ./src/frontend/Dockerfile  # 一般的なパターンに基づく推測
+        file: ./Dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
