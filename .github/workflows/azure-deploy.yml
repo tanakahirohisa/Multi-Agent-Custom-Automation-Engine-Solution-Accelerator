@@ -16,6 +16,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
+    - name: List directory contents
+      run: ls -la
+      
     - name: Set lowercase repository name
       run: echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       
@@ -38,8 +41,8 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v6
       with:
-        context: ./frontend
-        file: ./frontend/Dockerfile
+        context: .
+        file: ./src/frontend/Dockerfile  # 一般的なパターンに基づく推測
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
