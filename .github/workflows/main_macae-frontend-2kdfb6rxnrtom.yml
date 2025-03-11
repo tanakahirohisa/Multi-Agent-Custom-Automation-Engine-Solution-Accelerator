@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://biabcontainerreg.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_e2e4f9e07b8f48f8b6df11578358dc6a }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_afeb4def6f5249c0a785edf023e8b071 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_f6343ed038e74c61be797cdf3e104d77 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_f5fbdf224e6a4d1da0e7a55ab379cc86 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: biabcontainerreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_e2e4f9e07b8f48f8b6df11578358dc6a }}/macaefrontend:${{ github.sha }}
+        tags: biabcontainerreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_f6343ed038e74c61be797cdf3e104d77 }}/macaefrontend:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'macae-frontend-2kdfb6rxnrtom'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_bda3e6efef464491871df97d49b10902 }}
-        images: 'biabcontainerreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_e2e4f9e07b8f48f8b6df11578358dc6a }}/macaefrontend:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_b82976dafd85465489ae11e5cbee4e3d }}
+        images: 'biabcontainerreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_f6343ed038e74c61be797cdf3e104d77 }}/macaefrontend:${{ github.sha }}'
